@@ -41,6 +41,16 @@ function sanitize_file_name($filename) {
 	return $filename;
 }
 
+// Returns the file permissions in octal format.
+function file_permissions($file) {
+	// fileperms returns a numeric value
+	$numeric_perms = fileperms($file);
+	// but we are used to seeing the octal value
+	$octal_perms = sprintf('%o', $numeric_perms);
+	return substr($octal_perms, -4);
+}
+
+
 // Runs file being uploaded through a series of validations.
 // If file passes, it is moved to a permanent upload directory
 // and its execute permissions are removed.
@@ -96,6 +106,16 @@ function upload_file($field_name) {
 			// move_uploaded_file has is_uploaded_file() built-in
 			if(move_uploaded_file($tmp_file, $file_path)) {
 				echo "File moved to: {$file_path}<br />";
+
+				// remove execute file permissions from the file
+				if(chmod($file_path, 0644)) {
+					echo "Execute permissions removed from file.<br />";
+					$file_permissions = file_permissions($file_path);
+					echo "File permissions are now '{$file_permissions}'.<br />";
+				} else {
+					echo "Error: Execute permissions could not be removed.<br />";
+				}
+
 			}
 		}
 	
