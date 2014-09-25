@@ -16,7 +16,7 @@ class DataTable extends CActiveRecord
     parent::__construct($config);
   }
   
-  // переопределяем функцию, которая возвращает имя таблицы данных
+  // переопределяем метод возвращающий имя таблицы данных
   public function tableName() {
     return "{{data}}".$this->_tableId;
   }
