@@ -2,25 +2,27 @@
 
 class DataTable extends CActiveRecord 
 {
-  // здесь идентификатор таблицы данных
-  protected $_tableId;
+  // общие свойства всех DATA_TABLE таблиц
+}
+
+// таблица 43
+class DataTable43 extends DataTable {
   
-  // переопределяем конструктор AR, 
-  // добавляем установку идентификатора таблицы данных
-  public function __construct($tableId, $config=[]) {
-    if (!$tableId)
-      throw CException(500, "Неверный идентификатор таблицы");
-    
-    $this->_tableId = $tableId;
-    // родной конструктор AR
-    parent::__construct($config);
+  protected static $tableId;
+  
+  public static function setTableId($id) {
+    self::$tableId = $id;
   }
   
-  // переопределяем метод возвращающий имя таблицы данных
-  public function tableName() {
-    return "{{data}}".$this->_tableId;
+  public static function tableName() {
+    return "{{data".self::_tableId."}}";
   }
 }
 
-$table = new DataTable(43);
-echo $table->tableName(); // cb_data43
+class DataTableFactory
+{
+  public function getDataModel($id) {
+    return new "DataTable".$id;
+  }
+}
+
